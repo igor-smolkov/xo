@@ -1,10 +1,10 @@
 extends layout
 
-//- include components/card/card.pug
+include components/game/game.pug
 
 block variables
   - var title = 'XO'
   - var descr = 'Игра'
 
 block content
-  span Test
+  +game

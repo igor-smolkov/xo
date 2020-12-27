@@ -1,0 +1,8 @@
+include ../boat/boat.pug
+include ../terrain/terrain.pug
+
+mixin game
+  +b.game
+    +terrain
+    +boat
+    +e.log
