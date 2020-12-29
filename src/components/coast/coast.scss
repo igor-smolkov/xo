@@ -1,18 +1,29 @@
 .coast {
-  width: 20%;
+  width: 5%;
   height: 100%;
   // border: 2px solid yellow;
-  background-color: yellowgreen;
+  // background-color: yellowgreen;
+  
+  background-image: url('./dirt.png');
+  // background-size: 20%;
   // position: absolute;
   // top: 0;
   // right: 0;
   display: flex;
   flex-direction: column;
   &__bend {
-    width: 100px;
-    height: 100px;
-    background-color: yellowgreen;
+    // background-color: yellowgreen;
+    background-image: url('./dirt.png');
+
     position: relative;
-    left: -100px;
+    // left: -100px;
+    // border: 1px solid black;
+    &_fooded {
+      background-image: url('./field.jpg');
+      &:hover {
+        z-index: 10;
+        transform: scale(1.2);
+      }
+    }
   }
 }

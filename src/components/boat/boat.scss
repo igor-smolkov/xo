@@ -1,9 +1,11 @@
 .boat {
-  width: 75px;
-  height: 150px;
-  border: 4px solid black;
-  background-color: brown;
+  width: 150px;
+  height: 300px;
+  // border: 4px solid black;
+  // background-color: brown;
+  background: no-repeat center url('./raft.png');
+  background-size: 250%;
   position: absolute;
   top: 50%;
-  right: 50%;
+  left: 50%;
 }
