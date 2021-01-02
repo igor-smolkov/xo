@@ -2,6 +2,9 @@ include ../boat/boat.pug
 include ../terrain/terrain.pug
 
 mixin game
+  +b.AUDIO.music(src='media/bg.mp3' loop)
+  +b.AUDIO.effect(src='media/water.mp3')
+  +b.AUDIO.effect2(src='media/wow.mp3')
   +b.game
     +terrain
     +boat

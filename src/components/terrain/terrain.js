@@ -4,7 +4,7 @@ import rand from '../math/rand'
 
 export default function() {
   const terrainElement = document.querySelector('.terrain');
-  terrainElement.style.height = rand(200, 20000)+'%';
+  terrainElement.style.height = rand(1000, 10000)+'%';
 
   coast();
 }

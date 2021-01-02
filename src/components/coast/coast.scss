@@ -4,7 +4,7 @@
   // border: 2px solid yellow;
   // background-color: yellowgreen;
   
-  background-image: url('./dirt.png');
+  background-image: url('./grass.png');
   // background-size: 20%;
   // position: absolute;
   // top: 0;
@@ -13,13 +13,13 @@
   flex-direction: column;
   &__bend {
     // background-color: yellowgreen;
-    background-image: url('./dirt.png');
+    background-image: url('./grass.png');
 
     position: relative;
     // left: -100px;
     // border: 1px solid black;
     &_fooded {
-      background-image: url('./field.jpg');
+      background-image: url('./plants.png');
       &:hover {
         z-index: 10;
         transform: scale(1.2);

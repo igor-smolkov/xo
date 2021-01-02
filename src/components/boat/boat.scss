@@ -1,11 +1,36 @@
 .boat {
-  width: 150px;
-  height: 300px;
-  // border: 4px solid black;
-  // background-color: brown;
-  background: no-repeat center url('./raft.png');
-  background-size: 250%;
   position: absolute;
   top: 50%;
   left: 50%;
+  z-index: 1;
+  &::after{
+    content: '';
+    position: absolute;
+    display: block;
+    width: 75px;
+    height: 150px;
+    top: 0;
+    left: 0;
+    background-image: url('./wood.png');
+    background-size: 75%;
+    border-radius: 10px;
+  }
+  &_water-effect::before{
+    content: '';
+    position: absolute;
+    display: block;
+    width: 220px;
+    height: 400px;
+    top: -130px;
+    left: -50px;
+    background-image: url('./water-effect.gif');
+    animation: water-effect-opacity 0.1s ease-in;
+    opacity: 0.5;
+  }
+}
+
+@keyframes water-effect-opacity {
+  from {
+    opacity: 0;
+  }
 }

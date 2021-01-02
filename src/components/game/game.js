@@ -6,11 +6,28 @@ const gameElement = document.querySelector('.game')
 const logElement = gameElement.querySelector('.game__log')
 
 const boat = new Boat({food: 100});
+let isBoatWaterEffect = false;
 
 let moves = 0;
 let distance = 0;
 
 gameElement.addEventListener('scroll', (e)=>{
+  if (isMusicPlay) {
+    const effectElement = document.querySelector('.effect');
+    effectElement.volume = 0.2;
+    effectElement.play();
+  }
+
+  if (!isBoatWaterEffect) {
+    isBoatWaterEffect = true;
+    const boat = document.querySelector('.boat');
+    boat.classList.toggle('boat_water-effect');
+    setTimeout(()=>{
+      boat.classList.toggle('boat_water-effect');
+      isBoatWaterEffect = false;
+    }, 200);
+  }
+  
   distance = e.target.scrollTop / 100;
   if ((e.target.scrollHeight - e.target.scrollTop)<=e.target.clientHeight){
     gameWin();
@@ -28,12 +45,24 @@ gameElement.addEventListener('scroll', (e)=>{
   }
 }, true);
 
+let isMusicPlay = false;
 gameElement.addEventListener('click', (e)=>{
+  if (!isMusicPlay) {
+    isMusicPlay = true;
+    const musicElement = document.querySelector('.music');
+    musicElement.volume = 0.5;
+    musicElement.play();
+  }
+
   if (e.target.classList.contains('coast__bend_fooded')){
     e.target.style.backgroundColor = 'yellowgreen';
     const plus = Math.ceil((e.target.offsetWidth / 100) * (e.target.offsetHeight / 100));
     boat.addFood(plus);
     showInfo(plus);
+
+    const effect2Element = document.querySelector('.effect2');
+    effect2Element.volume = 0.04;
+    effect2Element.play();
   }
 }, true);
 

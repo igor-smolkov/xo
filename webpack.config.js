@@ -16,7 +16,7 @@ const entryPoint = 'script.js'
 const baseTemplate = 'index.pug'
 const outputHTML = 'index.html'
 
-const imagesDir = 'images'
+const imagesDir = 'media'
 const fontsDir = 'fonts'
 
 // const pagesDir = 'pages'
@@ -71,9 +71,9 @@ const plugins = () => {
     const list = [
         toHTMLPage(baseTemplate, outputHTML),
         new CleanWebpackPlugin(),
-        // new CopyWebpackPlugin({
-        //     patterns: [ { from: path.resolve(__dirname, `src/${imagesDir}/`), to: imagesDir } ]
-        // }),
+        new CopyWebpackPlugin({
+            patterns: [ { from: path.resolve(__dirname, `src/${imagesDir}/`), to: imagesDir } ]
+        }),
         // new webpack.ProvidePlugin({
         //     $: 'jquery',
         //     jQuery: 'jquery',
