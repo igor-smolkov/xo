@@ -1,2 +1,3 @@
 import '@/style.scss'
-import game from '@comp/game/game'
+import Game from '@comp/game/game'
+const game = new Game

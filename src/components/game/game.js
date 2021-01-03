@@ -1,87 +1,69 @@
 import './game.scss'
 import Boat from '../boat/boat'
-import terrain from '../terrain/terrain'
+import Terrain from '../terrain/terrain'
 
-const gameElement = document.querySelector('.game')
-const logElement = gameElement.querySelector('.game__log')
-
-const boat = new Boat({food: 100});
-let isBoatWaterEffect = false;
-
-let moves = 0;
-let distance = 0;
-
-gameElement.addEventListener('scroll', (e)=>{
-  if (isMusicPlay) {
-    const effectElement = document.querySelector('.effect');
-    effectElement.volume = 0.2;
-    effectElement.play();
+export default class Game {
+  constructor() {
+    this.element = document.querySelector('.game');
+    this.logElement = this.element.querySelector('.game__log');
+    this.bgSoundElement = this.element.querySelector('.game__bg-sound');
+    this.harvestSoundElement = document.querySelector('.game__harvest-sound');
+    this.isStart = false;
+    this.moves = 0;
+    this.distance = 0;
+    this.boat = new Boat({food: 100});
+    this.terrain = new Terrain();
+    this.element.addEventListener('click', (event) => this.click(event), true);
+    this.element.addEventListener('scroll', (event) => this.scroll(event), true);
+    setInterval(this.showInfo.bind(this), 500);
   }
+  init() {
+    this.isStart = true;
+    this.bgSoundElement.volume = 0.5;
+    this.bgSoundElement.play();
+    this.terrain.unblock();
+  }
+  click(event) {
+    if (!this.isStart) {
+      this.init();
+    }
+    if (event.target.classList.contains('coast__bend_fooded')){
+      this.harvesting(event.target);
+    }
+  }
+  scroll(event) {
+    if (this.isStart) {
+      this.boat.splashing();
+      this.distance =  event.target.scrollTop / 100;
+      if ((event.target.scrollHeight - event.target.scrollTop)<=event.target.clientHeight) { this.gameWin(); } //win
+      if (this.distance % 1 === 0) {
+        this.moves++;
+        this.showInfo();
 
-  if (!isBoatWaterEffect) {
-    isBoatWaterEffect = true;
-    const boat = document.querySelector('.boat');
-    boat.classList.toggle('boat_water-effect');
-    setTimeout(()=>{
-      boat.classList.toggle('boat_water-effect');
-      isBoatWaterEffect = false;
-    }, 200);
-  }
-  
-  distance = e.target.scrollTop / 100;
-  if ((e.target.scrollHeight - e.target.scrollTop)<=e.target.clientHeight){
-    gameWin();
-  }
-  if (distance % 1 === 0) {
-    moves++;
-    showInfo();
-    if (moves % 5 === 0) {
-      boat.mealTime();
-      if (boat.food < 0) {
-        boat.food = 0;
-        gameOver();
+        if ((this.moves % 5 === 0) && !this.boat.mealTime()) { this.gameOver(); } //loss
       }
     }
   }
-}, true);
+  harvesting(element) {
+    const plus = Math.ceil((element.offsetWidth / 100) * (element.offsetHeight / 100));
+    this.boat.addFood(plus);
+    this.showInfo(plus);
 
-let isMusicPlay = false;
-gameElement.addEventListener('click', (e)=>{
-  if (!isMusicPlay) {
-    isMusicPlay = true;
-    const musicElement = document.querySelector('.music');
-    musicElement.volume = 0.5;
-    musicElement.play();
+    this.harvestSoundElement.volume = 0.04;
+    this.harvestSoundElement.play();
   }
-
-  if (e.target.classList.contains('coast__bend_fooded')){
-    e.target.style.backgroundColor = 'yellowgreen';
-    const plus = Math.ceil((e.target.offsetWidth / 100) * (e.target.offsetHeight / 100));
-    boat.addFood(plus);
-    showInfo(plus);
-
-    const effect2Element = document.querySelector('.effect2');
-    effect2Element.volume = 0.04;
-    effect2Element.play();
+  showInfo(plus = undefined) {
+    this.logElement.innerText = this.moves + ' ход\n';
+    this.logElement.innerText += this.distance + ' м\n';
+    this.logElement.innerText += this.boat.food + ' еды';
+    if (plus) {
+      this.logElement.innerText += '\n+ ' + plus;
+    }
   }
-}, true);
-
-terrain();
-
-function gameOver() {
-  alert('вы померли с голоду')
-}
-function gameWin() {
-  alert('вы победили')
-}
-
-function showInfo(plus) {
-  logElement.innerText = moves + ' ход\n';
-  logElement.innerText += distance + ' м\n';
-  logElement.innerText += boat.food + ' еды';
-  if (plus) {
-    logElement.innerText += '\n+ ' + plus;
+  gameOver() {
+    alert('вы померли с голоду');
+  }
+  gameWin() {
+    alert('вы победили')
   }
 }
-
-setInterval(showInfo, 500);

@@ -18,5 +18,8 @@
     top: 0;
     left: 0;
     z-index: 0;
+    &_blocked {
+      overflow-y: hidden;
+    }
   }
 }
