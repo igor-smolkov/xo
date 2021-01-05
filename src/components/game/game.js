@@ -10,15 +10,16 @@ export default class Game {
     this.harvestSoundElement = document.querySelector('.game__harvest-sound');
     this.isStart = false;
     this.isTouchScreen = false;
-    this.scrollTimer = null;
+    this.isScrollStart = false;
+    this.isScrollMove = false;
+    this.scrollEndTimer = null;
+    this.scrollMoveTimer = null;
     this.moves = 0;
     this.distance = 0;
     this.boat = new Boat({food: 100});
     this.terrain = new Terrain();
     this.element.addEventListener('click', (event) => this.click(event), true);
     this.element.addEventListener('scroll', (event) => this.scroll(event), true);
-    this.element.addEventListener('touchstart', (event) => this.touchStart(event), true);
-    this.element.addEventListener('touchend', (event) => this.touchEnd(event), true);
     setInterval(this.showInfo.bind(this), 500);
   }
   init() {
@@ -37,43 +38,38 @@ export default class Game {
   }
   scroll(event) {
     if (this.isStart) {
+      this.scrollStart();
       this.distance =  event.target.scrollTop / 100;
+
+      clearTimeout(this.scrollEndTimer);
+      this.scrollEndTimer = setTimeout(this.scrollEnd.bind(this), 300)
+      clearTimeout(this.scrollMoveTimer);
+      this.scrollMoveTimer = setTimeout(this.scrollMove.bind(this), 30)
+      console.log('scroll-check')
+
       if ((event.target.scrollHeight - event.target.scrollTop)<=event.target.clientHeight) { this.gameWin(); } //win
-      if (!this.isTouchScreen) {
-        this.boat.splashing();
-        if (this.distance % 1 === 0) {
-          this.moves++;
-          this.showInfo();
-          if ((this.moves % 5 === 0) && !this.boat.mealTime()) { this.gameOver(); } //loss
-        }
-      } else {
-        clearTimeout(this.scrollTimer);
-        this.scrollTimer = setTimeout(this.scrollEnd.bind(this), 100)
-        console.log('scroll-check')
-      }
+    }
+  }
+  scrollStart() {
+    if (!this.isScrollStart) {
+      this.isScrollStart = true;
+      this.boat.splashing(true);
+    }
+  }
+  scrollMove() {
+    if (this.isScrollStart && !this.isScrollMove) {
+      this.isScrollMove = true;
+      this.moves++;
+      this.showInfo();
+
+      if ((this.moves % 5 === 0) && !this.boat.mealTime()) { this.gameOver(); } //loss
     }
   }
   scrollEnd() {
-    if (this.isStart && this.isTouchScreen) {
-      this.boat.splashing(false);
-      console.log('end-yes')
-    }
-  }
-  touchStart(event) {
-    this.isTouchScreen = true;
-    if (this.isStart) {
-      this.boat.splashing(true);
-      this.distance =  event.target.scrollTop / 100;
-    }
-    console.log('start')
-  }
-  touchEnd(event) {
-    if (this.isStart && this.isTouchScreen) {
-      this.moves++;
-      this.showInfo();
-      if ((this.moves % 5 === 0) && !this.boat.mealTime()) { this.gameOver(); } //loss
-      console.log('end-yes')
-    }
+    this.isScrollStart = false;
+    this.isScrollMove = false;
+    this.boat.splashing(false);
+    console.log('end-yes')
   }
   harvesting(element) {
     const plus = Math.ceil((element.offsetWidth / 100) * (element.offsetHeight / 100));
