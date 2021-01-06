@@ -9,11 +9,12 @@ export default class Game {
     this.bgSoundElement = this.element.querySelector('.game__bg-sound');
     this.harvestSoundElement = document.querySelector('.game__harvest-sound');
     this.isStart = false;
-    this.isTouchScreen = false;
     this.isScrollStart = false;
-    this.isScrollMove = false;
     this.scrollEndTimer = null;
-    this.scrollMoveTimer = null;
+    this.scrollStartTime = 0;
+    this.scrollCurrentTime = 0;
+    this.scrollCurrentInterval = 0;
+    this.scrollIntervalAverage = 0;
     this.moves = 0;
     this.distance = 0;
     this.boat = new Boat({food: 100});
@@ -38,38 +39,62 @@ export default class Game {
   }
   scroll(event) {
     if (this.isStart) {
+      this.catchingMovement(event);
       this.scrollStart();
       this.distance =  event.target.scrollTop / 100;
 
       clearTimeout(this.scrollEndTimer);
       this.scrollEndTimer = setTimeout(this.scrollEnd.bind(this), 300)
-      clearTimeout(this.scrollMoveTimer);
-      this.scrollMoveTimer = setTimeout(this.scrollMove.bind(this), 30)
-      console.log('scroll-check')
 
-      if ((event.target.scrollHeight - event.target.scrollTop)<=event.target.clientHeight) { this.gameWin(); } //win
+      if ((event.target.scrollHeight - event.target.scrollTop)<=event.target.clientHeight) { 
+        this.terrain.addHeight(500);
+      }
+      // if ((event.target.scrollHeight - event.target.scrollTop)<=event.target.clientHeight) { this.gameWin(); } //win
     }
   }
   scrollStart() {
     if (!this.isScrollStart) {
+      this.scrollCurrentTime = new Date().getTime();
+      this.scrollStartTime = this.scrollCurrentTime;
       this.isScrollStart = true;
       this.boat.splashing(true);
+      this.move();
     }
   }
   scrollMove() {
-    if (this.isScrollStart && !this.isScrollMove) {
-      this.isScrollMove = true;
-      this.moves++;
-      this.showInfo();
-
-      if ((this.moves % 5 === 0) && !this.boat.mealTime()) { this.gameOver(); } //loss
+    if (this.isScrollStart) {
+      this.boat.splashing(false);
+      this.boat.splashing(true);
+      this.move();
     }
   }
   scrollEnd() {
     this.isScrollStart = false;
-    this.isScrollMove = false;
     this.boat.splashing(false);
-    console.log('end-yes')
+  }
+  catchingMovement(event) {
+    if (this.scrollStart) {
+      const currentTime = new Date().getTime();
+      if (this.scrollIntervalAverage === 0) { this.scrollIntervalAverage = (currentTime - this.scrollCurrentTime) }
+      if (((this.scrollCurrentInterval>this.scrollIntervalAverage-10)&&(this.scrollCurrentInterval<this.scrollIntervalAverage+10))
+        &&((currentTime - this.scrollCurrentTime)>this.scrollIntervalAverage+10)) {
+        if (((currentTime - this.scrollCurrentTime)>this.scrollIntervalAverage*2)
+          &&((currentTime - this.scrollStartTime)>300)
+          &&(!((event.target.scrollTop/100)<this.distance+0.5)&&((event.target.scrollTop/100)>this.distance-0.5))) {
+          this.scrollMove();
+        }
+      } else {
+        this.scrollIntervalAverage = (this.scrollIntervalAverage+(currentTime - this.scrollCurrentTime))/2;
+      }
+      this.scrollCurrentInterval = (currentTime - this.scrollCurrentTime);
+      this.scrollCurrentTime = currentTime;
+    }
+  }
+  move() {
+    this.moves++;
+    this.showInfo();
+
+    if ((this.moves % 5 === 0) && !this.boat.mealTime()) { this.gameOver(); } //loss
   }
   harvesting(element) {
     const plus = Math.ceil((element.offsetWidth / 100) * (element.offsetHeight / 100));

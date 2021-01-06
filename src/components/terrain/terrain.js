@@ -6,11 +6,21 @@ export default class Terrain {
   constructor() {
     this.element = document.querySelector('.terrain');
     this.containerElement = document.querySelector('.terrain__container');
-    this.element.style.height = rand(1000, 10000)+'%';
+    this.length = rand(200, 300);
+    this.setHeight(this.length);
     this.coasts = new Coasts();
   }
   unblock() {
     this.containerElement.classList.toggle('terrain__container_blocked');
+  }
+  setHeight(height) {
+    this.length = height;
+    this.element.style.height = this.length+'%';
+  }
+  addHeight(value) {
+    this.length += value;
+    this.setHeight(this.length);
+    this.coasts.addCoasts();
   }
 }
 

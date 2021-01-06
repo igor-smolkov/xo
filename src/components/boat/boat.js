@@ -22,7 +22,6 @@ export default class Boat {
     if(splash) {
       this.isSplash = splash;
       this.element.classList.add('boat_water-effect');
-      console.log('add-splash')
       
       const splashSoundElement = this.element.querySelector('.boat__splash-sound');
       splashSoundElement.volume = 0.2;
@@ -30,7 +29,6 @@ export default class Boat {
     } else {
       this.isSplash = !splash;
       this.element.classList.remove('boat_water-effect');
-      console.log('remove-splash')
     }
   }
 }
