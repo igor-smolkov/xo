@@ -25,5 +25,12 @@
         transform: scale(1.2);
       }
     }
+    &_special {
+      background-image: url('./special.png');
+      &:hover {
+        z-index: 10;
+        transform: scale(1.2);
+      }
+    }
   }
 }

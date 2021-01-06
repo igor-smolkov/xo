@@ -7,7 +7,8 @@ export default class Game {
     this.element = document.querySelector('.game');
     this.logElement = this.element.querySelector('.game__log');
     this.bgSoundElement = this.element.querySelector('.game__bg-sound');
-    this.harvestSoundElement = document.querySelector('.game__harvest-sound');
+    this.harvestSoundElement = this.element.querySelector('.game__harvest-sound');
+    this.specialSoundElement = this.element.querySelector('.game__special-sound');
     this.isStart = false;
     this.isScrollStart = false;
     this.scrollEndTimer = null;
@@ -33,7 +34,8 @@ export default class Game {
     if (!this.isStart) {
       this.init();
     }
-    if (event.target.classList.contains('coast__bend_fooded')){
+    if (event.target.classList.contains('coast__bend_fooded')||
+      event.target.classList.contains('coast__bend_special')){
       this.harvesting(event.target);
     }
   }
@@ -98,22 +100,32 @@ export default class Game {
   }
   harvesting(element) {
     const plus = Math.ceil((element.offsetWidth / 100) * (element.offsetHeight / 100));
-    this.boat.addFood(plus);
-    this.showInfo(plus);
+    if (element.classList.contains('coast__bend_fooded')) {
+      this.boat.addFood(plus);
+      this.showInfo(plus);
 
-    this.harvestSoundElement.volume = 0.04;
-    this.harvestSoundElement.play();
+      this.harvestSoundElement.volume = 0.1;
+      this.harvestSoundElement.play();
+    }
+    if (element.classList.contains('coast__bend_special')) {
+      this.boat.addSpecial(plus);
+      this.showInfo(plus);
+
+      this.specialSoundElement.volume = 0.1;
+      this.specialSoundElement.play();
+    }
   }
   showInfo(plus = undefined) {
     this.logElement.innerText = this.moves + ' ход\n';
     this.logElement.innerText += this.distance + ' м\n';
-    this.logElement.innerText += this.boat.food + ' еды';
+    this.logElement.innerText += this.boat.food + ' еды\n';
+    this.logElement.innerText += this.boat.special + ' редких трав';
     if (plus) {
       this.logElement.innerText += '\n+ ' + plus;
     }
   }
   gameOver() {
-    alert('вы померли с голоду');
+    alert(`ваша еда закончилась и путешествие тоже\nвы преодолели: ${this.distance/1000} километров\nи собрали ${this.boat.special} редких трав`);
   }
   gameWin() {
     alert('вы победили')

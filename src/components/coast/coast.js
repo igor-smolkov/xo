@@ -28,10 +28,15 @@ export default class Coasts {
     bendElement.style.left = shift !== 0 ? shift+'px' : -randWidth+'px';
     bendElement.style.height = randHeight+'px';
 
-    if(rand(1,10) === 1) {
+    if(rand(1,100) === 1) {
       bendElement.classList.add('coast__bend_fooded');
       bendElement.addEventListener('click', (e)=>{
         e.target.classList.remove('coast__bend_fooded');
+      })
+    } else if(rand(1,1000) === 1) {
+      bendElement.classList.add('coast__bend_special');
+      bendElement.addEventListener('click', (e)=>{
+        e.target.classList.remove('coast__bend_special');
       })
     }
 
